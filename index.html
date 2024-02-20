@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+ <meta charset="UTF-8">
+
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <style>
+
+ body {
+
+ display: flex;
+
+ justify-content: center;
+
+ align-items: center;
+
+ height: 100vh;
+
+ margin: 0;
+
+ background: linear-gradient(to bottom right, #ff966d, #fa538d, #89379c);
+
+ }
+
+ #board {
+
+ display: grid;
+
+ grid-template-columns: repeat(3, 100px);
+
+ gap: 10px;
+
+ }
+
+ .cell {
+
+ width: 100px;
+
+ height: 100px;
+
+ display: flex;
+
+ justify-content: center;
+
+ align-items: center;
+
+ font-size: 24px;
+
+ font-weight: bold;
+
+ cursor: pointer;
+
+ background-color: #f0f0f0;
+
+ border: 1px solid #ccc;
+
+ transition: background-color 0.3s;
+
+ border-radius: 10px;
+
+ }
+
+ .cell:hover {
+
+ background-color: #e0e0e0;
+
+ }
+
+ #rematch-button {
+
+ position: fixed;
+
+ padding: 10px;
+
+ font-size: 18px;
+
+ cursor: pointer;
+
+ border-radius: 10px;
+
+ justify-content: center;
+
+ }
+
+ #rematch-button:active{
+
+ transform: scale(0.96);
+
+ }
+
+ </style>
+
+</head>
+
+<body>
+
+ <div id="board"></div>
+
+ <div id="winner-page">
+
+ <h1 id="winner-text"></h1>
+
+ <button id="rematch-button">New Game</button>
+
+ </div>
+<script>
+
+ let currentPlayer = 'X';
+
+ let board = ['', '', '', '', '', '', '', '', ''];
+
+ const boardElement = document.getElementById('board');
+
+ const winnerPage = document.getElementById('winner-page');
+
+ const winnerText = document.getElementById('winner-text');
+
+ const rematchButton = document.getElementById('rematch-button');
+
+ function initGame() {
+
+ board = ['', '', '', '', '', '', '', '', ''];
+
+ currentPlayer = 'X';
+
+ winnerPage.style.display = 'none';
+
+ renderBoard();
+
+ }
+
+ function renderBoard() {
+
+ boardElement.innerHTML = '';
+
+ for (let i = 0; i < 9; i++) {
+
+ const cell = document.createElement('div');
+
+ cell.className = 'cell';
+
+ cell.dataset.index = i;
+
+ cell.textContent = board[i];
+
+ cell.addEventListener('click', handleCellClick);
+
+ boardElement.appendChild(cell);
+
+ }
+
+ }
+
+ function handleCellClick(event) {
+
+ const index = event.target.dataset.index;
+
+ if (board[index] === '' && !checkWinner()) {
+
+ board[index] = currentPlayer;
+
+ renderBoard();
+
+ if (checkWinner()) {
+
+ showWinner();
+
+ } else {
+
+ currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+
+ }
+
+ }
+
+ }
+
+ function checkWinner() {
+
+ const winningCombinations = [
+
+ [0, 1, 2], [3, 4, 5], [6, 7, 8],
+
+ [0, 3, 6], [1, 4, 7], [2, 5, 8],
+
+ [0, 4, 8], [2, 4, 6]
+
+ ];
+
+ for (const combo of winningCombinations) {
+
+ const [a, b, c] = combo;
+
+ if (board[a] !== '' && board[a] === board[b] && board[b] === board[c]) {
+
+ return true;
+
+ }
+
+ }
+
+ return false;
+
+ }
+
+ function showWinner() {
+winnerText.textContent = `${currentPlayer} wins!`;
+
+ winnerPage.style.display = 'flex';
+
+ }
+
+ rematchButton.addEventListener('click', initGame);
+
+ initGame();
+
+ </script>
+
+</body>
+
+</html>
